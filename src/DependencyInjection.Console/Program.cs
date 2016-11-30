@@ -1,4 +1,5 @@
 ﻿using System;
+using Autofac;
 using DependencyInjection.Console.CharacterWriters;
 using DependencyInjection.Console.SquarePainters;
 using NDesk.Options;
@@ -22,6 +23,10 @@ namespace DependencyInjection.Console
                 {"p|pattern=", value => pattern = value}
             };
             optionSet.Parse(args);
+
+            var containerBuilder = new ContainerBuilder();
+            var container = containerBuilder.Build();
+
 
             var characterWriter = GetCharacterWriter(useColors);
             var patternWriter = new PatternWriter(characterWriter);
