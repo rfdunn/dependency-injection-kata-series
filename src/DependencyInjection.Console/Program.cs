@@ -27,11 +27,13 @@ namespace DependencyInjection.Console
             var builder = new ContainerBuilder();
             builder.Register(c => new AsciiWriter());
             builder.Register(c => useColors ? (ICharacterWriter)new ColorWriter(c.Resolve<AsciiWriter>()) : (c.Resolve<AsciiWriter>()));
+            builder.Register(c => new PatternWriter(c.Resolve<ICharacterWriter>()));
+
             var container = builder.Build();
 
-            var characterWriter = container.Resolve<ICharacterWriter>();
+            var patternWriter = container.Resolve<PatternWriter>();
 
-            var patternWriter = new PatternWriter(characterWriter);
+
             var squarePainter = GetSquarePainter(pattern);
             var patternGenerator = new PatternGenerator(squarePainter);
 
