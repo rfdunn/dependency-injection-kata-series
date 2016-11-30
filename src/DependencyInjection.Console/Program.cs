@@ -24,23 +24,18 @@ namespace DependencyInjection.Console
             };
             optionSet.Parse(args);
 
-            var containerBuilder = new ContainerBuilder();
-            var container = containerBuilder.Build();
+            var builder = new ContainerBuilder();
+            builder.Register(c => new AsciiWriter());
+            var container = builder.Build();
+            var writer = container.Resolve<AsciiWriter>();
 
-
-            var characterWriter = GetCharacterWriter(useColors);
+            var characterWriter = useColors ? (ICharacterWriter) new ColorWriter(writer) : writer;
             var patternWriter = new PatternWriter(characterWriter);
             var squarePainter = GetSquarePainter(pattern);
             var patternGenerator = new PatternGenerator(squarePainter);
 
             var app = new PatternApp(patternWriter, patternGenerator);
             app.Run(width, height);
-        }
-
-        private static ICharacterWriter GetCharacterWriter(bool useColors)
-        {
-            var writer = new AsciiWriter();
-            return useColors ? (ICharacterWriter) new ColorWriter(writer) : writer;
         }
 
         private static ISquarePainter GetSquarePainter(string pattern)
